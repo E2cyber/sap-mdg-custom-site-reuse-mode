@@ -1,7 +1,7 @@
 # How to Create a Custom Object with Reuse Mode in SAP MDG
 
 ![SAP](https://img.shields.io/badge/SAP-MDG-0FAAFF?style=flat-square&logo=sap)
-![ABAP](https://img.shields.io/badge/ABAP-OO-00599C?style=flat-square)
+![ABAP](https://img.shields.io/badge/ABAP-00599C?style=flat-square)
 ![License](https://img.shields.io/badge/license-MIT-green?style=flat-square)
 
 > **A step-by-step guide to implementing custom master data governance using SAP MDG Reuse Mode with direct persistence to custom ERP tables.**
