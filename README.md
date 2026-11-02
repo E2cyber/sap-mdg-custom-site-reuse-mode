@@ -206,6 +206,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 - [SAP MDG Official Documentation](https://help.sap.com/docs/SAP_MASTER_DATA_GOVERNANCE)
 - [SAP Community - MDG Help Guides](https://pages.community.sap.com/topics/master-data-governance/how-to)
+- [SAP Blog posted for this topic](https://community.sap.com/t5/technology-blog-posts-by-members/how-to-create-a-custom-object-with-reuse-mode-in-sap-mdg/ba-p/14456559)
 
 ---
 
