@@ -1,7 +1,7 @@
 # SAP MDG Custom Object – Site Master (Reuse Mode)
 
 ![SAP](https://img.shields.io/badge/SAP-MDG-0FAAFF?style=flat-square&logo=sap)
-![ABAP](https://img.shields.io/badge/ABAP-OO-00599C?style=flat-square)
+![ABAP](https://img.shields.io/badge/ABAP-00599C?style=flat-square)
 ![License](https://img.shields.io/badge/license-MIT-green?style=flat-square)
 
 ## 📋 Overview
