@@ -99,13 +99,13 @@ The first step is to create the Data Dictionary (DDIC) objects required for the 
 
 | Field Name | Component Type | Description |
 |------------|----------------|-------------|
-| SITE | ZSITE_ID | Site ID |
-| NAME | AD_NAME1 | Name |
-| CITY | AD_CITY1 | City |
-| COUNTRY | LAND1 | Country |
-| STREET | AD_STREET | Street |
-| ZIP | AD_PSTCD1 | Postal Code |
-| DESCR | AD_SMTPADR | Description |
+| ZSITE_ID | ZSITE_ID | Site ID |
+| AD_NAME1 | AD_NAME1 | Name |
+| AD_CITY1 | AD_CITY1 | City |
+| LAND1 | LAND1 | Country |
+| AD_STREET | AD_STREET | Street |
+| AD_PSTCD1 | AD_PSTCD1 | Postal Code |
+| AD_REMARK1 | AD_REMARK1 | Description |
 
 5. **Extras** → **Enhancement Category** → **Can be Enhanced (Deep)**
 6. **Save** and **Activate**
@@ -121,16 +121,6 @@ The first step is to create the Data Dictionary (DDIC) objects required for the 
 3. Click **Create**
 
 **Fields:**
-
-| Field Name | Component Type | Description |
-|------------|----------------|-------------|
-| ZSITE_ID | ZSITE_ID | Site ID |
-| AD_NAME1 | MDG_BS_CHG_INDICATOR | Change Indicator |
-| AD_CITY1 | MDG_BS_CHG_INDICATOR | Change Indicator |
-| LAND1 | MDG_BS_CHG_INDICATOR | Change Indicator |
-| AD_STREET | MDG_BS_CHG_INDICATOR | Change Indicator |
-| AD_PSTCD1 | MDG_BS_CHG_INDICATOR | Change Indicator |
-| AD_REMARK1 | MDG_BS_CHG_INDICATOR | Change Indicator |
 
 |Component|Typing Method|Component Type|
 |------------|----------------|-------------|
