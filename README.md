@@ -65,11 +65,12 @@ Implementation of custom **Site Master Data** governance using **SAP MDG Reuse M
 ---
 
 ## 📂 Repository Structure
-├── config/ # Configuration documentation
-├── docs/ # Detailed implementation guides
+
+├── config/                 # Configuration documentation
+├── docs/                   # Detailed implementation guides
 ├── src/
-│ ├── classes/ # ABAP access class code
-│ └── ddic/ # Data dictionary objects
+│   ├── classes/            # ABAP access class code
+│   └── ddic/               # Data dictionary objects
 ├── LICENSE
 └── README.md
 
