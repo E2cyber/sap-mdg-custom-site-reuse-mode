@@ -132,6 +132,19 @@ The first step is to create the Data Dictionary (DDIC) objects required for the 
 | AD_PSTCD1 | MDG_BS_CHG_INDICATOR | Change Indicator |
 | AD_REMARK1 | MDG_BS_CHG_INDICATOR | Change Indicator |
 
+|Component|Typing Method|Component Type|
+|------------|----------------|-------------|
+| ZSITE ID | Types | ZSITE ID |
+| AD NAME1 | Types | AD NAME1 |
+| AD CITY1 | Types | AD CITY1 |
+| LAND1 | Types | LAND1 |
+| AD STREET | Types | AD STREET |
+| AD PSTCD1 | Types | AD PSTCD1 |
+| AD REMARK1 |	Types | AD REMARK1 |
+| XFELD | Types | XFELD |
+
+
+
 4. **Enhancement Category:** Can be Enhanced (Deep)
 5. **Save** and **Activate**
 
