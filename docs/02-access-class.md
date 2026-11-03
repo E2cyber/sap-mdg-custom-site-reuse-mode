@@ -1,4 +1,3 @@
-```markdown
 # Phase 2: Access Class Implementation
 
 ## Overview
@@ -64,6 +63,8 @@ The Access Class is the core component that handles all data operations between 
 - `SAVE` - Persist data to YMDG_SITE table
 
 **Note:** Based on your business requirement, you can implement the necessary methods. For this implementation, we'll implement all core methods.
+
+---
 
 ---
 
