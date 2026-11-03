@@ -125,18 +125,6 @@ This is the critical step that validates Reuse Mode implementation - checking if
 - Record exists in YMDG_SITE table
 - All field values are correctly populated
 - Data matches what was entered in the change request
-
----
-
-### Step 3: Verify Specific Record
-
-
-1. Locate the Site record using **Site ID** (SITE001)
-2. Verify all fields:
-![Verify Site Record in Table](images/phase8/verify-site-record-table.png)
-
-**Expected Result:** All data entered through MDG is correctly stored in YMDG_SITE table.
-
 ---
 
 ## 8.5 Verify Data Consistency in MDG
@@ -145,9 +133,9 @@ This is the critical step that validates Reuse Mode implementation - checking if
 
 1. Go back to NWBC MDG application
 2. Click **Search** for Site
-3. Enter **Site ID:** SITE001
+3. Enter **Site ID:** TEST001
 4. Click **Search**
-
+![Verify Site Record in Table](images/phase8/verify-site-record-table.png)
 ---
 
 ### Step 2: Open Site Record
