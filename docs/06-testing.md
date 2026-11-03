@@ -159,7 +159,7 @@ This is the critical step that validates Reuse Mode implementation - checking if
 
 ### Test Scenario 1: Update Existing Site
 
-1. Search for Site **SITE001**
+1. Search for Site **TEST01**
 2. Click **Edit** (create new change request)
 3. Modify one or more fields (e.g., change City to "Boston")
 4. Submit for approval
