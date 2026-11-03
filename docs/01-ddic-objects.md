@@ -22,6 +22,7 @@ The first step is to create the Data Dictionary (DDIC) objects required for the 
    - **Output Length:** 10
 6. **Save** (assign to package or local object)
 7. **Activate**
+![Domain Creation](images/phase1/domain-creation.png)
 
 ---
 
