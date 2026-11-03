@@ -95,6 +95,7 @@ The first step is to create the Data Dictionary (DDIC) objects required for the 
 2. Select: **Can be Enhanced (Deep)**
 
 ![Table - Enhancement Category](images/phase1/table-enhancement-category.png)
+![Table - Enhancement Category](images/phase1/table-enhancement-category-1.png)
 
 ---
 
