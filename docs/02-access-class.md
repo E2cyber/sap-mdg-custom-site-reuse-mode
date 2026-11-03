@@ -868,8 +868,7 @@ METHOD if_usmd_pp_access~save.
 ## 2.3 Save and Activate
 
 1. Click **Save** button (Ctrl+S)
-2. Assign to package or save as local object
-3. Click **Activate** button (Ctrl+F3)
+2. Click **Activate** button (Ctrl+F3)
 
 ---
 
@@ -913,14 +912,6 @@ METHOD if_usmd_pp_access~save.
 Proceed to [Phase 3: Data Model Setup with Reuse Area](03-data-model-setup.md)
 
 ---
-
-## 📚 Additional Resources
-
-- [IF_USMD_PP_ACCESS Interface Documentation](https://help.sap.com/docs/SAP_MASTER_DATA_GOVERNANCE)
-- ABAP Development for MDG
-
----
-
 **Note:** This is the most critical component of the implementation. Ensure all methods are properly implemented and tested before proceeding to configuration.
 ```
 
