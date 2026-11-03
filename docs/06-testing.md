@@ -135,19 +135,6 @@ This is the critical step that validates Reuse Mode implementation - checking if
 2. Verify all fields:
 ![Verify Site Record in Table](images/phase8/verify-site-record-table.png)
 
-**Expected Data in YMDG_SITE:**
-
-| Field Name | Expected Value | Verified |
-|------------|----------------|----------|
-| MANDT | Your client (e.g., 100) | ✓ |
-| ZSITE_ID | SITE001 | ✓ |
-| AD_NAME1 | Main Distribution Center | ✓ |
-| AD_CITY1 | New York | ✓ |
-| LAND1 | US | ✓ |
-| AD_STREET | 123 Main Street | ✓ |
-| AD_PSTCD1 | 10001 | ✓ |
-| AD_REMARK1 | Primary distribution center... | ✓ |
-
 **Expected Result:** All data entered through MDG is correctly stored in YMDG_SITE table.
 
 ---
