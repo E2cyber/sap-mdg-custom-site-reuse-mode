@@ -53,7 +53,7 @@ This mapping transforms data from your custom structure (ZMDG_SITE_S) to the MDG
 
 ### Step 1: Navigate to Mapping Configuration
 
-1. In MDGIMG, navigate to: `General Settings → Data Modeling → Create and Edit Mappings → Create and Edit Mappings`
+In MDGIMG, navigate to: `General Settings → Data Modeling → Create and Edit Mappings → Create and Edit Mappings`
 
 ![Navigate to Create and Edit Mappings](images/phase4/navigate-create-edit-mappings-1.png)
 
@@ -97,20 +97,6 @@ Click **Create** or **Enter** to confirm.
 2. Maintain the field mappings between source and target structures:
 
 ![Field Mappings - Active to Staging](images/phase4/mapping-sta-field-mappings.png)
-
-**Field Mapping Configuration:**
-
-| Source Field (ZMDG_SITE_S) | Target Field (ZSZK_S_ZK_PP_SITE) | Transformation |
-|----------------------------|----------------------------------|----------------|
-| SITE | SITE | Direct (1:1) |
-| NAME | NAME | Direct (1:1) |
-| CITY | CITY | Direct (1:1) |
-| COUNTRY | COUNTRY | Direct (1:1) |
-| STREET | STREET | Direct (1:1) |
-| ZIP | ZIP | Direct (1:1) |
-| DESCR | DESCR | Direct (1:1) |
-
-**Transformation Type:** Direct Assignment (most common for simple mappings)
 
 ---
 
@@ -188,20 +174,6 @@ Click **Create** or **Enter** to confirm.
 2. Maintain the field mappings between source and target structures:
 
 ![Field Mappings - Staging to Active](images/phase4/mapping-pp-field-mappings.png)
-
-**Field Mapping Configuration:**
-
-| Source Field (ZSZK_S_ZK_PP_SITE) | Target Field (ZMDG_SITE_S) | Transformation |
-|----------------------------------|----------------------------|----------------|
-| SITE | SITE | Direct (1:1) |
-| NAME | NAME | Direct (1:1) |
-| CITY | CITY | Direct (1:1) |
-| COUNTRY | COUNTRY | Direct (1:1) |
-| STREET | STREET | Direct (1:1) |
-| ZIP | ZIP | Direct (1:1) |
-| DESCR | DESCR | Direct (1:1) |
-
-**Transformation Type:** Direct Assignment
 
 ---
 
