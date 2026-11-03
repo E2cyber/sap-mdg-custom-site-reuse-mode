@@ -97,12 +97,10 @@ Click **Create** or **Enter** to confirm.
 2. Maintain the field mappings between source and target structures:
 
 ![Field Mappings - Active to Staging](images/phase4/mapping-sta-field-mappings.png)
-
+![Save Mapping](images/phase4/mapping-sta-save.png)
 ---
 
 ### Step 6: Save the Mapping
-
-![Save Mapping](images/phase4/mapping-sta-save.png)
 
 1. Click **Save** button
 2. Verify no errors in the status bar
@@ -165,6 +163,7 @@ Click **Create** or **Enter** to confirm.
 4. Click **Add** or **New Entry** to add a new mapping field
 
 ![Mapping Transformations Tab](images/phase4/mapping-pp-transformations.png)
+![Field Mappings - Staging to Active](images/phase4/mapping-pp-field-mappings.png)
 
 ---
 
@@ -172,9 +171,6 @@ Click **Create** or **Enter** to confirm.
 
 1. Select transformation order **00001**
 2. Maintain the field mappings between source and target structures:
-
-![Field Mappings - Staging to Active](images/phase4/mapping-pp-field-mappings.png)
-
 ---
 
 ### Step 7: Save the Mapping
