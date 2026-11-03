@@ -30,9 +30,6 @@ This final phase validates the complete end-to-end implementation of the custom 
 2. You should see the Site master data homepage with options like:
    - Search for Site
    - Create New Site
-   - My Change Requests
-   - Worklist (for approvers)
-
 ---
 
 ## 8.2 Create New Site Record
