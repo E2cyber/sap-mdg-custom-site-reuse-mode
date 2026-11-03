@@ -133,7 +133,7 @@ This is the critical step that validates Reuse Mode implementation - checking if
 
 1. Go back to NWBC MDG application
 2. Click **Search** for Site
-3. Enter **Site ID:** TEST001
+3. Enter **Site ID:** TEST01
 4. Click **Search**
 ![Verify Site Record in Table](images/phase8/verify-site-record-table.png)
 ---
@@ -149,15 +149,7 @@ This is the critical step that validates Reuse Mode implementation - checking if
 
 **Verification:** Data displayed in MDG should match exactly with data in YMDG_SITE table (verified in Step 8.4).
 
-| Field | MDG Display | YMDG_SITE Table | Match |
-|-------|-------------|-----------------|-------|
-| Site ID | SITE001 | SITE001 | ✓ |
-| Name | Main Distribution Center | Main Distribution Center | ✓ |
-| City | New York | New York | ✓ |
-| Country | US | US | ✓ |
-| Street | 123 Main Street | 123 Main Street | ✓ |
-| ZIP | 10001 | 10001 | ✓ |
-| Description | Primary distribution... | Primary distribution... | ✓ |
+![Display YMDG_SITE Table in SE16N](images/phase8/display-ymdg-site-table.png)
 
 **Expected Result:** Complete data consistency between MDG frontend and custom active area table.
 
