@@ -120,65 +120,7 @@ Assign at the Entity Type level for entity-specific active areas.
 
 ---
 
-## 3.5 Define Entity Attributes
-
-1. In MDGIMG, navigate to: `General Settings → Data Modeling → Define Attributes`
-2. Select Data Model **ZK** and Entity Type **SITE**
-3. Click **New Entries**
-
-**Add the following attributes:**
-
-| Field Name | Data Element | Description | Key Field |
-|------------|--------------|-------------|-----------|
-| SITE | ZSITE_ID | Site ID | ✓ |
-| NAME | AD_NAME1 | Name | |
-| CITY | AD_CITY1 | City | |
-| COUNTRY | LAND1 | Country | |
-| STREET | AD_STREET | Street | |
-| ZIP | AD_PSTCD1 | Postal Code | |
-| DESCR | AD_SMTPADR | Description | |
-
-4. **Save**
-
----
-
-## 3.6 Assign Structures to Entity Type
-
-1. In MDGIMG, navigate to: `General Settings → Data Modeling → Assign Structures to Entity Types`
-2. Select Data Model **ZK** and Entity Type **SITE**
-3. Click **New Entries**
-
-**Assign the following structures:**
-
-| Structure Usage | Structure Name | Description |
-|-----------------|----------------|-------------|
-| Data Structure | ZMDG_SITE_S | Main data structure |
-| Change Indicator Structure | ZMDG_SITE_S_X | Change indicator |
-| Table Type | ZMDG_SITE_T | Data table type |
-| Table Type (Change) | ZMDG_SITE_T_X | Change table type |
-
-4. **Save**
-
----
-
-## 3.7 Generate Data Model Structures
-
-After completing the configuration, generate the MDG-specific structures:
-
-1. In MDGIMG, navigate to: `General Settings → Data Modeling → Generate Data Model-Specific Structures`
-2. Select Data Model **ZK**
-3. Click **Generate** (F8)
-4. Check the generation log for errors
-5. Ensure all structures are generated successfully
-
-**Generated Structures Include:**
-- `ZSZK_S_ZK_PP_SITE` - Staging area structure
-- `ZTZK_S_ZK_PP_SITE` - Staging area table type
-- And others...
-
----
-
-## 3.8 Activate Data Model
+## 3.5 Activate Data Model
 
 1. In MDGIMG, navigate to: `General Settings → Data Modeling → Activate Data Model`
 2. Select Data Model **ZK**
