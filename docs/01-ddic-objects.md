@@ -85,7 +85,7 @@ The first step is to create the Data Dictionary (DDIC) objects required for the 
 | LAND1 | | LAND1 | Country |
 | AD_STREET | | AD_STREET | Street |
 | AD_PSTCD1 | | AD_PSTCD1 | Postal Code |
-| AD_REMARK1 | | AD_SMTPADR | Description |
+| AD_REMARK1 | | AD_REMARK1 | Description |
 
 ---
 
@@ -105,8 +105,8 @@ The first step is to create the Data Dictionary (DDIC) objects required for the 
 ![Table - Technical Settings](images/phase1/table-technical-settings.png)
 
 2. Configure:
-   - **Data Class:** APPL0 (Master data)
-   - **Size Category:** 1 (or as per requirement)
+   - **Data Class:** APPL1 (Master data)
+   - **Size Category:** 0 (or as per requirement)
 
 3. **Save** and **Activate** the table
 
@@ -126,16 +126,6 @@ The first step is to create the Data Dictionary (DDIC) objects required for the 
 **Define Fields:**
 
 ![Structure ZMDG_SITE_S - Fields](images/phase1/structure-zmdg-site-s.png)
-
-| Field Name | Component Type | Description |
-|------------|----------------|-------------|
-| SITE | ZSITE_ID | Site ID |
-| NAME | AD_NAME1 | Name |
-| CITY | AD_CITY1 | City |
-| COUNTRY | LAND1 | Country |
-| STREET | AD_STREET | Street |
-| ZIP | AD_PSTCD1 | Postal Code |
-| DESCR | AD_SMTPADR | Description |
 
 **Set Enhancement Category:**
 
@@ -157,16 +147,6 @@ The first step is to create the Data Dictionary (DDIC) objects required for the 
 **Define Fields:**
 
 ![Structure ZMDG_SITE_S_X - Fields](images/phase1/structure-zmdg-site-s-x.png)
-
-| Field Name | Component Type | Description |
-|------------|----------------|-------------|
-| ZSITE_ID | ZSITE_ID | Site ID |
-| AD_NAME1 | MDG_BS_CHG_INDICATOR | Change Indicator |
-| AD_CITY1 | MDG_BS_CHG_INDICATOR | Change Indicator |
-| LAND1 | MDG_BS_CHG_INDICATOR | Change Indicator |
-| AD_STREET | MDG_BS_CHG_INDICATOR | Change Indicator |
-| AD_PSTCD1 | MDG_BS_CHG_INDICATOR | Change Indicator |
-| AD_REMARK1 | MDG_BS_CHG_INDICATOR | Change Indicator |
 
 **Set Enhancement Category:**
 
@@ -256,16 +236,11 @@ The first step is to create the Data Dictionary (DDIC) objects required for the 
 ![Lock Object - Configuration](images/phase1/lock-object.png)
 
 - **Primary Table Name:** YMDG_SITE
-- **Lock Mode:** Write Lock (E - Exclusive)
+- **Lock Mode:** Write Lock 
 
 **Lock Parameters:**
 
 ![Lock Object - Lock Parameters](images/phase1/lock-object-lock-parameter.png)
-
-| Parameter Name | Type |
-|----------------|------|
-| MANDT | Client |
-| ZSITE_ID | Site ID |
 
 5. **Save** and **Activate**
 
