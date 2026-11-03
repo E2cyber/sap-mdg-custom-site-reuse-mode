@@ -79,65 +79,61 @@ Click on method `IF_USMD_PP_ACCESS~CHECK_EXISTENCE_MASS` and add this code:
 ```abap
 METHOD if_usmd_pp_access~check_existence_mass.
 
-  TYPES: BEGIN OF ty_key,
-           zsite_id TYPE zsite_id,
-         END OF ty_key.
+    TYPES: BEGIN OF ty_key,
+             zsite_id TYPE zsite_id,
+           END OF ty_key.
 
-  DATA: lt_key_check TYPE STANDARD TABLE OF ty_key,
-        lt_key_db    TYPE STANDARD TABLE OF ty_key,
-        ls_key       TYPE ty_key.
+    DATA: lt_key_check TYPE STANDARD TABLE OF ty_key,
+          lt_key_db    TYPE STANDARD TABLE OF ty_key,
+          ls_key       TYPE ty_key.
 
-  FIELD-SYMBOLS: <ls_input_key> TYPE any,
-                 <lv_site_id>   TYPE any.
+    FIELD-SYMBOLS: <ls_input_key> TYPE any,
+                   <lv_site_id>   TYPE any.
 
-  CLEAR: et_key,
-         et_message,
-         ev_not_supported.
+    CLEAR: et_key,
+           et_message,
+           ev_not_supported.
 
-  ev_not_supported = abap_false.
+    ev_not_supported = abap_false.
 
-  " Only handle SITE entity
-  IF iv_entity <> 'SITE'.
-    ev_not_supported = abap_true.
-    RETURN.
-  ENDIF.
-
-  IF it_key IS INITIAL.
-    RETURN.
-  ENDIF.
-
-  " Extract Site IDs from input
-  LOOP AT it_key ASSIGNING <ls_input_key>.
-    ASSIGN COMPONENT 'ZSITE_ID' OF STRUCTURE <ls_input_key> TO <lv_site_id>.
-    IF sy-subrc = 0.
-      ls_key-zsite_id = <lv_site_id>.
-      APPEND ls_key TO lt_key_check.
+    IF iv_entity <> 'SITE'.
+      ev_not_supported = abap_true.
+      RETURN.
     ENDIF.
-  ENDLOOP.
 
-  " Check existence in YMDG_SITE table
-  IF lt_key_check IS NOT INITIAL.
-    SELECT zsite_id
-      FROM ymdg_site
-      INTO TABLE lt_key_db
-      FOR ALL ENTRIES IN lt_key_check
-      WHERE zsite_id = lt_key_check-zsite_id.
-  ENDIF.
+    IF it_key IS INITIAL.
+      RETURN.
+    ENDIF.
 
-  " Return existing keys
-  LOOP AT it_key ASSIGNING <ls_input_key>.
-    ASSIGN COMPONENT 'ZSITE_ID' OF STRUCTURE <ls_input_key> TO <lv_site_id>.
-    IF sy-subrc = 0.
-      ls_key-zsite_id = <lv_site_id>.
-      READ TABLE lt_key_db TRANSPORTING NO FIELDS
-        WITH KEY zsite_id = ls_key-zsite_id.
+    LOOP AT it_key ASSIGNING <ls_input_key>.
+      ASSIGN COMPONENT 'ZSITE_ID' OF STRUCTURE <ls_input_key> TO <lv_site_id>.
       IF sy-subrc = 0.
-        INSERT <ls_input_key> INTO TABLE et_key.
+        ls_key-zsite_id = <lv_site_id>.
+        APPEND ls_key TO lt_key_check.
       ENDIF.
-    ENDIF.
-  ENDLOOP.
+    ENDLOOP.
 
-ENDMETHOD.
+    IF lt_key_check IS NOT INITIAL.
+      SELECT zsite_id
+        FROM ymdg_site
+        INTO TABLE lt_key_db
+        FOR ALL ENTRIES IN lt_key_check
+        WHERE zsite_id = lt_key_check-zsite_id.
+    ENDIF.
+
+    LOOP AT it_key ASSIGNING <ls_input_key>.
+      ASSIGN COMPONENT 'ZSITE_ID' OF STRUCTURE <ls_input_key> TO <lv_site_id>.
+      IF sy-subrc = 0.
+        ls_key-zsite_id = <lv_site_id>.
+        READ TABLE lt_key_db TRANSPORTING NO FIELDS
+          WITH KEY zsite_id = ls_key-zsite_id.
+        IF sy-subrc = 0.
+          INSERT <ls_input_key> INTO TABLE et_key.
+        ENDIF.
+      ENDIF.
+    ENDLOOP.
+
+  ENDMETHOD.
 ```
 
 ---
@@ -149,41 +145,39 @@ ENDMETHOD.
 ```abap
 METHOD if_usmd_pp_access~dequeue.
 
-  FIELD-SYMBOLS: <ls_value>   TYPE any,
-                 <lv_site_id> TYPE any.
+    FIELD-SYMBOLS: <ls_value>   TYPE any,
+                   <lv_site_id> TYPE any.
 
-  IF i_entity <> 'SITE'.
-    RETURN.
-  ENDIF.
-
-  " If no specific records, unlock all
-  IF it_value IS INITIAL.
-    CALL FUNCTION 'DEQUEUE_EZMDG_SITE'
-      EXPORTING
-        mode_ymdg_site = i_lock_type
-        mandt          = sy-mandt
-        _scope         = i_scope.
-    RETURN.
-  ENDIF.
-
-  " Unlock specific records
-  LOOP AT it_value ASSIGNING <ls_value>.
-
-    ASSIGN COMPONENT 'ZSITE_ID' OF STRUCTURE <ls_value> TO <lv_site_id>.
-    IF sy-subrc <> 0.
-      CONTINUE.
+    IF i_entity <> 'SITE'.
+      RETURN.
     ENDIF.
 
-    CALL FUNCTION 'DEQUEUE_EZMDG_SITE'
-      EXPORTING
-        mode_ymdg_site = i_lock_type
-        mandt          = sy-mandt
-        zsite_id       = <lv_site_id>
-        _scope         = i_scope.
+    IF it_value IS INITIAL.
+      CALL FUNCTION 'DEQUEUE_EZMDG_SITE'
+        EXPORTING
+          mode_ymdg_site = i_lock_type
+          mandt          = sy-mandt
+          _scope         = i_scope.
+      RETURN.
+    ENDIF.
 
-  ENDLOOP.
+    LOOP AT it_value ASSIGNING <ls_value>.
 
-ENDMETHOD.
+      ASSIGN COMPONENT 'ZSITE_ID' OF STRUCTURE <ls_value> TO <lv_site_id>.
+      IF sy-subrc <> 0.
+        CONTINUE.
+      ENDIF.
+
+      CALL FUNCTION 'DEQUEUE_EZMDG_SITE'
+        EXPORTING
+          mode_ymdg_site = i_lock_type
+          mandt          = sy-mandt
+          zsite_id       = <lv_site_id>
+          _scope         = i_scope.
+
+    ENDLOOP.
+
+  ENDMETHOD.
 ```
 
 ---
@@ -195,76 +189,74 @@ ENDMETHOD.
 ```abap
 METHOD if_usmd_pp_access~enqueue.
 
-  DATA: ls_message TYPE usmd_s_message.
+    DATA: ls_message TYPE usmd_s_message.
 
-  FIELD-SYMBOLS: <ls_value>   TYPE any,
-                 <lv_site_id> TYPE any.
+    FIELD-SYMBOLS: <ls_value>   TYPE any,
+                   <lv_site_id> TYPE any.
 
-  CLEAR et_message.
+    CLEAR et_message.
 
-  IF i_entity <> 'SITE'.
-    RETURN.
-  ENDIF.
-
-  " If no specific records, lock all
-  IF it_value IS INITIAL.
-    CALL FUNCTION 'ENQUEUE_EZMDG_SITE'
-      EXPORTING
-        mode_ymdg_site = i_lock_type
-        mandt          = sy-mandt
-        _scope         = i_scope
-      EXCEPTIONS
-        foreign_lock   = 1
-        system_failure = 2
-        OTHERS         = 3.
-
-    IF sy-subrc <> 0.
-      ls_message-msgid = sy-msgid.
-      ls_message-msgno = sy-msgno.
-      ls_message-msgty = 'E'.
-      ls_message-msgv1 = sy-msgv1.
-      ls_message-msgv2 = sy-msgv2.
-      ls_message-msgv3 = sy-msgv3.
-      ls_message-msgv4 = sy-msgv4.
-      APPEND ls_message TO et_message.
-    ENDIF.
-    RETURN.
-  ENDIF.
-
-  " Lock specific records
-  LOOP AT it_value ASSIGNING <ls_value>.
-
-    ASSIGN COMPONENT 'ZSITE_ID' OF STRUCTURE <ls_value> TO <lv_site_id>.
-    IF sy-subrc <> 0.
-      CONTINUE.
+    IF i_entity <> 'SITE'.
+      RETURN.
     ENDIF.
 
-    CALL FUNCTION 'ENQUEUE_EZMDG_SITE'
-      EXPORTING
-        mode_ymdg_site = i_lock_type
-        mandt          = sy-mandt
-        zsite_id       = <lv_site_id>
-        _scope         = i_scope
-      EXCEPTIONS
-        foreign_lock   = 1
-        system_failure = 2
-        OTHERS         = 3.
+    IF it_value IS INITIAL.
+      CALL FUNCTION 'ENQUEUE_EZMDG_SITE'
+        EXPORTING
+          mode_ymdg_site = i_lock_type
+          mandt          = sy-mandt
+          _scope         = i_scope
+        EXCEPTIONS
+          foreign_lock   = 1
+          system_failure = 2
+          OTHERS         = 3.
 
-    IF sy-subrc <> 0.
-      CLEAR ls_message.
-      ls_message-msgid = sy-msgid.
-      ls_message-msgno = sy-msgno.
-      ls_message-msgty = 'E'.
-      ls_message-msgv1 = <lv_site_id>.
-      ls_message-msgv2 = sy-msgv2.
-      ls_message-msgv3 = sy-msgv3.
-      ls_message-msgv4 = sy-msgv4.
-      APPEND ls_message TO et_message.
+      IF sy-subrc <> 0.
+        ls_message-msgid = sy-msgid.
+        ls_message-msgno = sy-msgno.
+        ls_message-msgty = 'E'.
+        ls_message-msgv1 = sy-msgv1.
+        ls_message-msgv2 = sy-msgv2.
+        ls_message-msgv3 = sy-msgv3.
+        ls_message-msgv4 = sy-msgv4.
+        APPEND ls_message TO et_message.
+      ENDIF.
+      RETURN.
     ENDIF.
 
-  ENDLOOP.
+    LOOP AT it_value ASSIGNING <ls_value>.
 
-ENDMETHOD.
+      ASSIGN COMPONENT 'ZSITE_ID' OF STRUCTURE <ls_value> TO <lv_site_id>.
+      IF sy-subrc <> 0.
+        CONTINUE.
+      ENDIF.
+
+      CALL FUNCTION 'ENQUEUE_EZMDG_SITE'
+        EXPORTING
+          mode_ymdg_site = i_lock_type
+          mandt          = sy-mandt
+          zsite_id       = <lv_site_id>
+          _scope         = i_scope
+        EXCEPTIONS
+          foreign_lock   = 1
+          system_failure = 2
+          OTHERS         = 3.
+
+      IF sy-subrc <> 0.
+        CLEAR ls_message.
+        ls_message-msgid = sy-msgid.
+        ls_message-msgno = sy-msgno.
+        ls_message-msgty = 'E'.
+        ls_message-msgv1 = <lv_site_id>.
+        ls_message-msgv2 = sy-msgv2.
+        ls_message-msgv3 = sy-msgv3.
+        ls_message-msgv4 = sy-msgv4.
+        APPEND ls_message TO et_message.
+      ENDIF.
+
+    ENDLOOP.
+
+  ENDMETHOD.
 ```
 
 ---
@@ -276,10 +268,9 @@ ENDMETHOD.
 ```abap
 METHOD if_usmd_pp_access~get_key_handling.
 
-  " External key handling - Site ID is provided by user
-  e_key_handling = if_usmd_pp_access=>cs_key_handling-external.
+    e_key_handling = if_usmd_pp_access=>cs_key_handling-external.
 
-ENDMETHOD.
+  ENDMETHOD.
 ```
 
 ---
@@ -289,47 +280,46 @@ ENDMETHOD.
 **Purpose:** Define which fields are searchable in MDG search screens
 
 ```abap
-METHOD if_usmd_pp_access~get_query_properties.
+ METHOD if_usmd_pp_access~get_query_properties.
 
-  DATA: ls_search_attr TYPE usmd_s_search_criteria.
+    DATA: ls_search_attr TYPE usmd_s_search_criteria.
 
-  CLEAR: et_search_attributes,
-         et_search_attribute_props.
+    CLEAR: et_search_attributes,
+           et_search_attribute_props.
 
-  IF i_entity <> 'SITE'.
-    RETURN.
-  ENDIF.
+    IF i_entity <> 'SITE'.
+      RETURN.
+    ENDIF.
 
-  " Define searchable fields
-  CLEAR ls_search_attr.
-  ls_search_attr-fieldname = 'SITE'.
-  APPEND ls_search_attr TO et_search_attributes.
+    CLEAR ls_search_attr.
+    ls_search_attr-fieldname = 'SITE'.
+    APPEND ls_search_attr TO et_search_attributes.
 
-  CLEAR ls_search_attr.
-  ls_search_attr-fieldname = 'NAME'.
-  APPEND ls_search_attr TO et_search_attributes.
+    CLEAR ls_search_attr.
+    ls_search_attr-fieldname = 'NAME'.
+    APPEND ls_search_attr TO et_search_attributes.
 
-  CLEAR ls_search_attr.
-  ls_search_attr-fieldname = 'CITY'.
-  APPEND ls_search_attr TO et_search_attributes.
+    CLEAR ls_search_attr.
+    ls_search_attr-fieldname = 'CITY'.
+    APPEND ls_search_attr TO et_search_attributes.
 
-  CLEAR ls_search_attr.
-  ls_search_attr-fieldname = 'COUNTRY'.
-  APPEND ls_search_attr TO et_search_attributes.
+    CLEAR ls_search_attr.
+    ls_search_attr-fieldname = 'COUNTRY'.
+    APPEND ls_search_attr TO et_search_attributes.
 
-  CLEAR ls_search_attr.
-  ls_search_attr-fieldname = 'STREET'.
-  APPEND ls_search_attr TO et_search_attributes.
+    CLEAR ls_search_attr.
+    ls_search_attr-fieldname = 'STREET'.
+    APPEND ls_search_attr TO et_search_attributes.
 
-  CLEAR ls_search_attr.
-  ls_search_attr-fieldname = 'ZIP'.
-  APPEND ls_search_attr TO et_search_attributes.
+    CLEAR ls_search_attr.
+    ls_search_attr-fieldname = 'ZIP'.
+    APPEND ls_search_attr TO et_search_attributes.
 
-  CLEAR ls_search_attr.
-  ls_search_attr-fieldname = 'DESCR'.
-  APPEND ls_search_attr TO et_search_attributes.
+    CLEAR ls_search_attr.
+    ls_search_attr-fieldname = 'DESCR'.
+    APPEND ls_search_attr TO et_search_attributes.
 
-ENDMETHOD.
+  ENDMETHOD.
 ```
 
 ---
@@ -341,155 +331,150 @@ ENDMETHOD.
 ```abap
 METHOD if_usmd_pp_access~query.
 
-  DATA: lt_ymdg_site  TYPE STANDARD TABLE OF ymdg_site,
-        ls_ymdg_site  TYPE ymdg_site,
-        lt_where      TYPE TABLE OF string,
-        lt_field_cond TYPE TABLE OF string,
-        lv_where      TYPE string,
-        lv_field      TYPE string,
-        lv_low        TYPE string,
-        lv_high       TYPE string,
-        lv_field_expr TYPE string,
-        lr_data       TYPE REF TO data.
+    DATA: lt_ymdg_site  TYPE STANDARD TABLE OF ymdg_site,
+          ls_ymdg_site  TYPE ymdg_site,
+          lt_where      TYPE TABLE OF string,
+          lt_field_cond TYPE TABLE OF string,
+          lv_where      TYPE string,
+          lv_field      TYPE string,
+          lv_low        TYPE string,
+          lv_high       TYPE string,
+          lv_field_expr TYPE string,
+          lr_data       TYPE REF TO data.
 
-  FIELD-SYMBOLS: <ls_sel>    TYPE usmd_s_sel,
-                 <ls_data>   TYPE any,
-                 <lv_target> TYPE any,
-                 <lv_cond>   TYPE string.
+    FIELD-SYMBOLS: <ls_sel>    TYPE usmd_s_sel,
+                   <ls_data>   TYPE any,
+                   <lv_target> TYPE any,
+                   <lv_cond>   TYPE string.
 
-  CLEAR: et_message,
-         ef_not_supported.
+    CLEAR: et_message,
+           ef_not_supported.
 
-  IF i_entity <> 'SITE'.
-    ef_not_supported = abap_true.
-    RETURN.
-  ENDIF.
-
-  CREATE DATA lr_data LIKE LINE OF et_data.
-  ASSIGN lr_data->* TO <ls_data>.
-
-  " Build WHERE clause from search criteria
-  LOOP AT it_sel ASSIGNING <ls_sel>.
-
-    IF <ls_sel>-low IS INITIAL AND <ls_sel>-high IS INITIAL.
-      CONTINUE.
+    IF i_entity <> 'SITE'.
+      ef_not_supported = abap_true.
+      RETURN.
     ENDIF.
 
-    " Map MDG field names to database field names
-    CASE <ls_sel>-fieldname.
-      WHEN 'SITE'.    lv_field = 'ZSITE_ID'.
-      WHEN 'NAME'.    lv_field = 'AD_NAME1'.
-      WHEN 'CITY'.    lv_field = 'AD_CITY1'.
-      WHEN 'COUNTRY'. lv_field = 'LAND1'.
-      WHEN 'STREET'.  lv_field = 'AD_STREET'.
-      WHEN 'ZIP'.     lv_field = 'AD_PSTCD1'.
-      WHEN 'DESCR'.   lv_field = 'AD_REMARK1'.
-      WHEN OTHERS.    CONTINUE.
-    ENDCASE.
+    CREATE DATA lr_data LIKE LINE OF et_data.
+    ASSIGN lr_data->* TO <ls_data>.
 
-    lv_low  = <ls_sel>-low.
-    lv_high = <ls_sel>-high.
+    LOOP AT it_sel ASSIGNING <ls_sel>.
 
-    CLEAR lv_where.
-    CASE <ls_sel>-option.
-      WHEN 'EQ' OR ''.
-        IF lv_low CA '*'.
+      IF <ls_sel>-low IS INITIAL AND <ls_sel>-high IS INITIAL.
+        CONTINUE.
+      ENDIF.
+
+      CASE <ls_sel>-fieldname.
+        WHEN 'SITE'.    lv_field = 'ZSITE_ID'.
+        WHEN 'NAME'.    lv_field = 'AD_NAME1'.
+        WHEN 'CITY'.    lv_field = 'AD_CITY1'.
+        WHEN 'COUNTRY'. lv_field = 'LAND1'.
+        WHEN 'STREET'.  lv_field = 'AD_STREET'.
+        WHEN 'ZIP'.     lv_field = 'AD_PSTCD1'.
+        WHEN 'DESCR'.   lv_field = 'AD_REMARK1'.
+        WHEN OTHERS.    CONTINUE.
+      ENDCASE.
+
+      lv_low  = <ls_sel>-low.
+      lv_high = <ls_sel>-high.
+
+      CLEAR lv_where.
+      CASE <ls_sel>-option.
+        WHEN 'EQ' OR ''.
+          IF lv_low CA '*'.
+            REPLACE ALL OCCURRENCES OF '*' IN lv_low WITH '%'.
+            CONCATENATE lv_field ` LIKE '` lv_low `'` INTO lv_where.
+          ELSE.
+            CONCATENATE lv_field ` = '` lv_low `'` INTO lv_where.
+          ENDIF.
+        WHEN 'BT'.
+          CONCATENATE lv_field ` BETWEEN '` lv_low `' AND '` lv_high `'`
+                      INTO lv_where.
+        WHEN 'CP'.
           REPLACE ALL OCCURRENCES OF '*' IN lv_low WITH '%'.
           CONCATENATE lv_field ` LIKE '` lv_low `'` INTO lv_where.
-        ELSE.
+        WHEN 'NE'.
+          CONCATENATE lv_field ` <> '` lv_low `'` INTO lv_where.
+        WHEN 'GT'.
+          CONCATENATE lv_field ` > '` lv_low `'` INTO lv_where.
+        WHEN 'LT'.
+          CONCATENATE lv_field ` < '` lv_low `'` INTO lv_where.
+        WHEN 'GE'.
+          CONCATENATE lv_field ` >= '` lv_low `'` INTO lv_where.
+        WHEN 'LE'.
+          CONCATENATE lv_field ` <= '` lv_low `'` INTO lv_where.
+        WHEN OTHERS.
           CONCATENATE lv_field ` = '` lv_low `'` INTO lv_where.
-        ENDIF.
-      WHEN 'BT'.
-        CONCATENATE lv_field ` BETWEEN '` lv_low `' AND '` lv_high `'`
-                    INTO lv_where.
-      WHEN 'CP'.
-        REPLACE ALL OCCURRENCES OF '*' IN lv_low WITH '%'.
-        CONCATENATE lv_field ` LIKE '` lv_low `'` INTO lv_where.
-      WHEN 'NE'.
-        CONCATENATE lv_field ` <> '` lv_low `'` INTO lv_where.
-      WHEN 'GT'.
-        CONCATENATE lv_field ` > '` lv_low `'` INTO lv_where.
-      WHEN 'LT'.
-        CONCATENATE lv_field ` < '` lv_low `'` INTO lv_where.
-      WHEN 'GE'.
-        CONCATENATE lv_field ` >= '` lv_low `'` INTO lv_where.
-      WHEN 'LE'.
-        CONCATENATE lv_field ` <= '` lv_low `'` INTO lv_where.
-      WHEN OTHERS.
-        CONCATENATE lv_field ` = '` lv_low `'` INTO lv_where.
-    ENDCASE.
+      ENDCASE.
 
-    IF lv_where IS NOT INITIAL.
-      APPEND lv_where TO lt_field_cond.
+      IF lv_where IS NOT INITIAL.
+        APPEND lv_where TO lt_field_cond.
+      ENDIF.
+
+    ENDLOOP.
+
+    CLEAR lv_field_expr.
+    LOOP AT lt_field_cond ASSIGNING <lv_cond>.
+      IF lv_field_expr IS INITIAL.
+        lv_field_expr = <lv_cond>.
+      ELSE.
+        CONCATENATE lv_field_expr ` OR ` <lv_cond> INTO lv_field_expr.
+      ENDIF.
+    ENDLOOP.
+
+    IF lv_field_expr IS NOT INITIAL.
+      CONCATENATE `(` lv_field_expr `)` INTO lv_field_expr.
+      APPEND lv_field_expr TO lt_where.
     ENDIF.
 
-  ENDLOOP.
-
-  " Combine all conditions with OR
-  CLEAR lv_field_expr.
-  LOOP AT lt_field_cond ASSIGNING <lv_cond>.
-    IF lv_field_expr IS INITIAL.
-      lv_field_expr = <lv_cond>.
+    IF i_num_entries > 0.
+      IF lt_where IS INITIAL.
+        SELECT * FROM ymdg_site INTO TABLE lt_ymdg_site
+          UP TO i_num_entries ROWS.
+      ELSE.
+        SELECT * FROM ymdg_site INTO TABLE lt_ymdg_site
+          UP TO i_num_entries ROWS
+          WHERE (lt_where).
+      ENDIF.
     ELSE.
-      CONCATENATE lv_field_expr ` OR ` <lv_cond> INTO lv_field_expr.
+      IF lt_where IS INITIAL.
+        SELECT * FROM ymdg_site INTO TABLE lt_ymdg_site.
+      ELSE.
+        SELECT * FROM ymdg_site INTO TABLE lt_ymdg_site
+          WHERE (lt_where).
+      ENDIF.
     ENDIF.
-  ENDLOOP.
 
-  IF lv_field_expr IS NOT INITIAL.
-    CONCATENATE `(` lv_field_expr `)` INTO lv_field_expr.
-    APPEND lv_field_expr TO lt_where.
-  ENDIF.
+    LOOP AT lt_ymdg_site INTO ls_ymdg_site.
 
-  " Execute query with or without limits
-  IF i_num_entries > 0.
-    IF lt_where IS INITIAL.
-      SELECT * FROM ymdg_site INTO TABLE lt_ymdg_site
-        UP TO i_num_entries ROWS.
-    ELSE.
-      SELECT * FROM ymdg_site INTO TABLE lt_ymdg_site
-        UP TO i_num_entries ROWS
-        WHERE (lt_where).
-    ENDIF.
-  ELSE.
-    IF lt_where IS INITIAL.
-      SELECT * FROM ymdg_site INTO TABLE lt_ymdg_site.
-    ELSE.
-      SELECT * FROM ymdg_site INTO TABLE lt_ymdg_site
-        WHERE (lt_where).
-    ENDIF.
-  ENDIF.
+      CLEAR <ls_data>.
 
-  " Map database records to MDG structure
-  LOOP AT lt_ymdg_site INTO ls_ymdg_site.
+      ASSIGN COMPONENT 'SITE' OF STRUCTURE <ls_data> TO <lv_target>.
+      IF sy-subrc = 0. <lv_target> = ls_ymdg_site-zsite_id. ENDIF.
 
-    CLEAR <ls_data>.
+      ASSIGN COMPONENT 'NAME' OF STRUCTURE <ls_data> TO <lv_target>.
+      IF sy-subrc = 0. <lv_target> = ls_ymdg_site-ad_name1. ENDIF.
 
-    ASSIGN COMPONENT 'SITE' OF STRUCTURE <ls_data> TO <lv_target>.
-    IF sy-subrc = 0. <lv_target> = ls_ymdg_site-zsite_id. ENDIF.
+      ASSIGN COMPONENT 'CITY' OF STRUCTURE <ls_data> TO <lv_target>.
+      IF sy-subrc = 0. <lv_target> = ls_ymdg_site-ad_city1. ENDIF.
 
-    ASSIGN COMPONENT 'NAME' OF STRUCTURE <ls_data> TO <lv_target>.
-    IF sy-subrc = 0. <lv_target> = ls_ymdg_site-ad_name1. ENDIF.
+      ASSIGN COMPONENT 'COUNTRY' OF STRUCTURE <ls_data> TO <lv_target>.
+      IF sy-subrc = 0. <lv_target> = ls_ymdg_site-land1. ENDIF.
 
-    ASSIGN COMPONENT 'CITY' OF STRUCTURE <ls_data> TO <lv_target>.
-    IF sy-subrc = 0. <lv_target> = ls_ymdg_site-ad_city1. ENDIF.
+      ASSIGN COMPONENT 'STREET' OF STRUCTURE <ls_data> TO <lv_target>.
+      IF sy-subrc = 0. <lv_target> = ls_ymdg_site-ad_street. ENDIF.
 
-    ASSIGN COMPONENT 'COUNTRY' OF STRUCTURE <ls_data> TO <lv_target>.
-    IF sy-subrc = 0. <lv_target> = ls_ymdg_site-land1. ENDIF.
+      ASSIGN COMPONENT 'ZIP' OF STRUCTURE <ls_data> TO <lv_target>.
+      IF sy-subrc = 0. <lv_target> = ls_ymdg_site-ad_pstcd1. ENDIF.
 
-    ASSIGN COMPONENT 'STREET' OF STRUCTURE <ls_data> TO <lv_target>.
-    IF sy-subrc = 0. <lv_target> = ls_ymdg_site-ad_street. ENDIF.
+      ASSIGN COMPONENT 'DESCR' OF STRUCTURE <ls_data> TO <lv_target>.
+      IF sy-subrc = 0. <lv_target> = ls_ymdg_site-ad_remark1. ENDIF.
 
-    ASSIGN COMPONENT 'ZIP' OF STRUCTURE <ls_data> TO <lv_target>.
-    IF sy-subrc = 0. <lv_target> = ls_ymdg_site-ad_pstcd1. ENDIF.
+      INSERT <ls_data> INTO TABLE et_data.
 
-    ASSIGN COMPONENT 'DESCR' OF STRUCTURE <ls_data> TO <lv_target>.
-    IF sy-subrc = 0. <lv_target> = ls_ymdg_site-ad_remark1. ENDIF.
+    ENDLOOP.
 
-    INSERT <ls_data> INTO TABLE et_data.
-
-  ENDLOOP.
-
-ENDMETHOD.
+  ENDMETHOD.
 ```
 
 ---
@@ -501,136 +486,133 @@ ENDMETHOD.
 ```abap
 METHOD if_usmd_pp_access~read_value.
 
-  DATA: lt_ymdg_site  TYPE STANDARD TABLE OF ymdg_site,
-        ls_ymdg_site  TYPE ymdg_site,
-        lt_where      TYPE TABLE OF string,
-        lt_field_cond TYPE TABLE OF string,
-        lv_where      TYPE string,
-        lv_field      TYPE string,
-        lv_low        TYPE string,
-        lv_high       TYPE string,
-        lv_field_expr TYPE string,
-        lr_data       TYPE REF TO data.
+    DATA: lt_ymdg_site  TYPE STANDARD TABLE OF ymdg_site,
+          ls_ymdg_site  TYPE ymdg_site,
+          lt_where      TYPE TABLE OF string,
+          lt_field_cond TYPE TABLE OF string,
+          lv_where      TYPE string,
+          lv_field      TYPE string,
+          lv_low        TYPE string,
+          lv_high       TYPE string,
+          lv_field_expr TYPE string,
+          lr_data       TYPE REF TO data.
 
-  FIELD-SYMBOLS: <ls_sel>    TYPE usmd_s_sel,
-                 <ls_data>   TYPE any,
-                 <lv_target> TYPE any,
-                 <lv_cond>   TYPE string.
+    FIELD-SYMBOLS: <ls_sel>    TYPE usmd_s_sel,
+                   <ls_data>   TYPE any,
+                   <lv_target> TYPE any,
+                   <lv_cond>   TYPE string.
 
-  CLEAR et_message.
+    CLEAR et_message.
 
-  IF i_entity <> 'SITE'.
-    RETURN.
-  ENDIF.
+    IF i_entity <> 'SITE'.
+      RETURN.
+    ENDIF.
 
-  CREATE DATA lr_data LIKE LINE OF et_data.
-  ASSIGN lr_data->* TO <ls_data>.
+    CREATE DATA lr_data LIKE LINE OF et_data.
+    ASSIGN lr_data->* TO <ls_data>.
 
-  " Build WHERE clause
-  LOOP AT it_sel ASSIGNING <ls_sel>.
+    LOOP AT it_sel ASSIGNING <ls_sel>.
 
-    CASE <ls_sel>-fieldname.
-      WHEN 'SITE'.    lv_field = 'ZSITE_ID'.
-      WHEN 'NAME'.    lv_field = 'AD_NAME1'.
-      WHEN 'CITY'.    lv_field = 'AD_CITY1'.
-      WHEN 'COUNTRY'. lv_field = 'LAND1'.
-      WHEN 'STREET'.  lv_field = 'AD_STREET'.
-      WHEN 'ZIP'.     lv_field = 'AD_PSTCD1'.
-      WHEN 'DESCR'.   lv_field = 'AD_REMARK1'.
-      WHEN OTHERS.    CONTINUE.
-    ENDCASE.
+      CASE <ls_sel>-fieldname.
+        WHEN 'SITE'.    lv_field = 'ZSITE_ID'.
+        WHEN 'NAME'.    lv_field = 'AD_NAME1'.
+        WHEN 'CITY'.    lv_field = 'AD_CITY1'.
+        WHEN 'COUNTRY'. lv_field = 'LAND1'.
+        WHEN 'STREET'.  lv_field = 'AD_STREET'.
+        WHEN 'ZIP'.     lv_field = 'AD_PSTCD1'.
+        WHEN 'DESCR'.   lv_field = 'AD_REMARK1'.
+        WHEN OTHERS.    CONTINUE.
+      ENDCASE.
 
-    lv_low  = <ls_sel>-low.
-    lv_high = <ls_sel>-high.
+      lv_low  = <ls_sel>-low.
+      lv_high = <ls_sel>-high.
 
-    CLEAR lv_where.
-    CASE <ls_sel>-option.
-      WHEN 'EQ' OR ''.
-        IF lv_low CA '*'.
+      CLEAR lv_where.
+      CASE <ls_sel>-option.
+        WHEN 'EQ' OR ''.
+          IF lv_low CA '*'.
+            REPLACE ALL OCCURRENCES OF '*' IN lv_low WITH '%'.
+            CONCATENATE lv_field ` LIKE '` lv_low `'` INTO lv_where.
+          ELSE.
+            CONCATENATE lv_field ` = '` lv_low `'` INTO lv_where.
+          ENDIF.
+        WHEN 'BT'.
+          CONCATENATE lv_field ` BETWEEN '` lv_low `' AND '` lv_high `'`
+                      INTO lv_where.
+        WHEN 'CP'.
           REPLACE ALL OCCURRENCES OF '*' IN lv_low WITH '%'.
           CONCATENATE lv_field ` LIKE '` lv_low `'` INTO lv_where.
-        ELSE.
+        WHEN 'NE'.
+          CONCATENATE lv_field ` <> '` lv_low `'` INTO lv_where.
+        WHEN 'GT'.
+          CONCATENATE lv_field ` > '` lv_low `'` INTO lv_where.
+        WHEN 'LT'.
+          CONCATENATE lv_field ` < '` lv_low `'` INTO lv_where.
+        WHEN 'GE'.
+          CONCATENATE lv_field ` >= '` lv_low `'` INTO lv_where.
+        WHEN 'LE'.
+          CONCATENATE lv_field ` <= '` lv_low `'` INTO lv_where.
+        WHEN OTHERS.
           CONCATENATE lv_field ` = '` lv_low `'` INTO lv_where.
-        ENDIF.
-      WHEN 'BT'.
-        CONCATENATE lv_field ` BETWEEN '` lv_low `' AND '` lv_high `'`
-                    INTO lv_where.
-      WHEN 'CP'.
-        REPLACE ALL OCCURRENCES OF '*' IN lv_low WITH '%'.
-        CONCATENATE lv_field ` LIKE '` lv_low `'` INTO lv_where.
-      WHEN 'NE'.
-        CONCATENATE lv_field ` <> '` lv_low `'` INTO lv_where.
-      WHEN 'GT'.
-        CONCATENATE lv_field ` > '` lv_low `'` INTO lv_where.
-      WHEN 'LT'.
-        CONCATENATE lv_field ` < '` lv_low `'` INTO lv_where.
-      WHEN 'GE'.
-        CONCATENATE lv_field ` >= '` lv_low `'` INTO lv_where.
-      WHEN 'LE'.
-        CONCATENATE lv_field ` <= '` lv_low `'` INTO lv_where.
-      WHEN OTHERS.
-        CONCATENATE lv_field ` = '` lv_low `'` INTO lv_where.
-    ENDCASE.
+      ENDCASE.
 
-    IF lv_where IS NOT INITIAL.
-      APPEND lv_where TO lt_field_cond.
+      IF lv_where IS NOT INITIAL.
+        APPEND lv_where TO lt_field_cond.
+      ENDIF.
+
+    ENDLOOP.
+
+    CLEAR lv_field_expr.
+    LOOP AT lt_field_cond ASSIGNING <lv_cond>.
+      IF lv_field_expr IS INITIAL.
+        lv_field_expr = <lv_cond>.
+      ELSE.
+        CONCATENATE lv_field_expr ` OR ` <lv_cond> INTO lv_field_expr.
+      ENDIF.
+    ENDLOOP.
+
+    IF lv_field_expr IS NOT INITIAL.
+      CONCATENATE `(` lv_field_expr `)` INTO lv_field_expr.
+      APPEND lv_field_expr TO lt_where.
     ENDIF.
 
-  ENDLOOP.
-
-  CLEAR lv_field_expr.
-  LOOP AT lt_field_cond ASSIGNING <lv_cond>.
-    IF lv_field_expr IS INITIAL.
-      lv_field_expr = <lv_cond>.
+    IF lt_where IS INITIAL.
+      SELECT * FROM ymdg_site INTO TABLE lt_ymdg_site.
     ELSE.
-      CONCATENATE lv_field_expr ` OR ` <lv_cond> INTO lv_field_expr.
+      SELECT * FROM ymdg_site INTO TABLE lt_ymdg_site
+        WHERE (lt_where).
     ENDIF.
-  ENDLOOP.
 
-  IF lv_field_expr IS NOT INITIAL.
-    CONCATENATE `(` lv_field_expr `)` INTO lv_field_expr.
-    APPEND lv_field_expr TO lt_where.
-  ENDIF.
+    LOOP AT lt_ymdg_site INTO ls_ymdg_site.
 
-  " Read data from YMDG_SITE
-  IF lt_where IS INITIAL.
-    SELECT * FROM ymdg_site INTO TABLE lt_ymdg_site.
-  ELSE.
-    SELECT * FROM ymdg_site INTO TABLE lt_ymdg_site
-      WHERE (lt_where).
-  ENDIF.
+      CLEAR <ls_data>.
 
-  " Map to output structure
-  LOOP AT lt_ymdg_site INTO ls_ymdg_site.
+      ASSIGN COMPONENT 'SITE' OF STRUCTURE <ls_data> TO <lv_target>.
+      IF sy-subrc = 0. <lv_target> = ls_ymdg_site-zsite_id. ENDIF.
 
-    CLEAR <ls_data>.
+      ASSIGN COMPONENT 'NAME' OF STRUCTURE <ls_data> TO <lv_target>.
+      IF sy-subrc = 0. <lv_target> = ls_ymdg_site-ad_name1. ENDIF.
 
-    ASSIGN COMPONENT 'SITE' OF STRUCTURE <ls_data> TO <lv_target>.
-    IF sy-subrc = 0. <lv_target> = ls_ymdg_site-zsite_id. ENDIF.
+      ASSIGN COMPONENT 'CITY' OF STRUCTURE <ls_data> TO <lv_target>.
+      IF sy-subrc = 0. <lv_target> = ls_ymdg_site-ad_city1. ENDIF.
 
-    ASSIGN COMPONENT 'NAME' OF STRUCTURE <ls_data> TO <lv_target>.
-    IF sy-subrc = 0. <lv_target> = ls_ymdg_site-ad_name1. ENDIF.
+      ASSIGN COMPONENT 'COUNTRY' OF STRUCTURE <ls_data> TO <lv_target>.
+      IF sy-subrc = 0. <lv_target> = ls_ymdg_site-land1. ENDIF.
 
-    ASSIGN COMPONENT 'CITY' OF STRUCTURE <ls_data> TO <lv_target>.
-    IF sy-subrc = 0. <lv_target> = ls_ymdg_site-ad_city1. ENDIF.
+      ASSIGN COMPONENT 'STREET' OF STRUCTURE <ls_data> TO <lv_target>.
+      IF sy-subrc = 0. <lv_target> = ls_ymdg_site-ad_street. ENDIF.
 
-    ASSIGN COMPONENT 'COUNTRY' OF STRUCTURE <ls_data> TO <lv_target>.
-    IF sy-subrc = 0. <lv_target> = ls_ymdg_site-land1. ENDIF.
+      ASSIGN COMPONENT 'ZIP' OF STRUCTURE <ls_data> TO <lv_target>.
+      IF sy-subrc = 0. <lv_target> = ls_ymdg_site-ad_pstcd1. ENDIF.
 
-    ASSIGN COMPONENT 'STREET' OF STRUCTURE <ls_data> TO <lv_target>.
-    IF sy-subrc = 0. <lv_target> = ls_ymdg_site-ad_street. ENDIF.
+      ASSIGN COMPONENT 'DESCR' OF STRUCTURE <ls_data> TO <lv_target>.
+      IF sy-subrc = 0. <lv_target> = ls_ymdg_site-ad_remark1. ENDIF.
 
-    ASSIGN COMPONENT 'ZIP' OF STRUCTURE <ls_data> TO <lv_target>.
-    IF sy-subrc = 0. <lv_target> = ls_ymdg_site-ad_pstcd1. ENDIF.
+      INSERT <ls_data> INTO TABLE et_data.
 
-    ASSIGN COMPONENT 'DESCR' OF STRUCTURE <ls_data> TO <lv_target>.
-    IF sy-subrc = 0. <lv_target> = ls_ymdg_site-ad_remark1. ENDIF.
+    ENDLOOP.
 
-    INSERT <ls_data> INTO TABLE et_data.
-
-  ENDLOOP.
-
-ENDMETHOD.
+  ENDMETHOD.
 ```
 
 ---
@@ -642,144 +624,56 @@ ENDMETHOD.
 ```abap
 METHOD if_usmd_pp_access~save.
 
-  DATA: lr_data_ins  TYPE REF TO data,
-        lr_data_upd  TYPE REF TO data,
-        lr_data_del  TYPE REF TO data,
-        lr_data_mod  TYPE REF TO data,
-        ls_ymdg_site TYPE ymdg_site,
-        ls_message   TYPE usmd_s_message,
-        lv_zsite_id  TYPE zsite_id,
-        lv_kind      TYPE c LENGTH 1,
-        lt_upsert    TYPE STANDARD TABLE OF REF TO data.
+    DATA: lr_data_ins  TYPE REF TO data,
+          lr_data_upd  TYPE REF TO data,
+          lr_data_del  TYPE REF TO data,
+          lr_data_mod  TYPE REF TO data,
+          ls_ymdg_site TYPE ymdg_site,
+          ls_message   TYPE usmd_s_message,
+          lv_zsite_id  TYPE zsite_id,
+          lv_kind      TYPE c LENGTH 1,
+          lt_upsert    TYPE STANDARD TABLE OF REF TO data.
 
-  FIELD-SYMBOLS: <l_data>    TYPE any,
-                 <lt_data>   TYPE ANY TABLE,
-                 <ls_data>   TYPE any,
-                 <lv_value>  TYPE any,
-                 <lr_ptr>    TYPE REF TO data.
+    FIELD-SYMBOLS: <l_data>    TYPE any,
+                   <lt_data>   TYPE ANY TABLE,
+                   <ls_data>   TYPE any,
+                   <lv_value>  TYPE any,
+                   <lr_ptr>    TYPE REF TO data.
 
-  CLEAR: et_message,
-         et_tmp_key_map.
+    CLEAR: et_message,
+           et_tmp_key_map.
 
-  " Get delta data from MDG staging
-  TRY.
-      CALL METHOD io_delta->read_data
-        EXPORTING
-          i_entity      = 'SITE'
-        IMPORTING
-          er_t_data_ins = lr_data_ins
-          er_t_data_upd = lr_data_upd
-          er_t_data_del = lr_data_del
-          er_t_data_mod = lr_data_mod.
-    CATCH cx_root.
-      RETURN.
-  ENDTRY.
+    TRY.
+        CALL METHOD io_delta->read_data
+          EXPORTING
+            i_entity      = 'SITE'
+          IMPORTING
+            er_t_data_ins = lr_data_ins
+            er_t_data_upd = lr_data_upd
+            er_t_data_del = lr_data_del
+            er_t_data_mod = lr_data_mod.
+      CATCH cx_root.
+        RETURN.
+    ENDTRY.
 
-  " Handle INSERT and MODIFY
-  IF lr_data_ins IS BOUND.
-    APPEND lr_data_ins TO lt_upsert.
-  ENDIF.
-  IF lr_data_mod IS BOUND.
-    APPEND lr_data_mod TO lt_upsert.
-  ENDIF.
-
-  LOOP AT lt_upsert ASSIGNING <lr_ptr>.
-
-    ASSIGN <lr_ptr>->* TO <l_data>.
-    IF sy-subrc <> 0.
-      CONTINUE.
+    IF lr_data_ins IS BOUND.
+      APPEND lr_data_ins TO lt_upsert.
+    ENDIF.
+    IF lr_data_mod IS BOUND.
+      APPEND lr_data_mod TO lt_upsert.
     ENDIF.
 
-    DESCRIBE FIELD <l_data> TYPE lv_kind.
+    LOOP AT lt_upsert ASSIGNING <lr_ptr>.
 
-    IF lv_kind = 'h' OR lv_kind = 'H'.
-      ASSIGN <lr_ptr>->* TO <lt_data>.
-      IF sy-subrc = 0.
-        LOOP AT <lt_data> ASSIGNING <ls_data>.
-
-          CLEAR ls_ymdg_site.
-          ls_ymdg_site-mandt = sy-mandt.
-
-          ASSIGN COMPONENT 'SITE' OF STRUCTURE <ls_data> TO <lv_value>.
-          IF sy-subrc = 0. ls_ymdg_site-zsite_id = <lv_value>. ENDIF.
-
-          ASSIGN COMPONENT 'NAME' OF STRUCTURE <ls_data> TO <lv_value>.
-          IF sy-subrc = 0. ls_ymdg_site-ad_name1 = <lv_value>. ENDIF.
-
-          ASSIGN COMPONENT 'CITY' OF STRUCTURE <ls_data> TO <lv_value>.
-          IF sy-subrc = 0. ls_ymdg_site-ad_city1 = <lv_value>. ENDIF.
-
-          ASSIGN COMPONENT 'COUNTRY' OF STRUCTURE <ls_data> TO <lv_value>.
-          IF sy-subrc = 0. ls_ymdg_site-land1 = <lv_value>. ENDIF.
-
-          ASSIGN COMPONENT 'STREET' OF STRUCTURE <ls_data> TO <lv_value>.
-          IF sy-subrc = 0. ls_ymdg_site-ad_street = <lv_value>. ENDIF.
-
-          ASSIGN COMPONENT 'ZIP' OF STRUCTURE <ls_data> TO <lv_value>.
-          IF sy-subrc = 0. ls_ymdg_site-ad_pstcd1 = <lv_value>. ENDIF.
-
-          ASSIGN COMPONENT 'DESCR' OF STRUCTURE <ls_data> TO <lv_value>.
-          IF sy-subrc = 0. ls_ymdg_site-ad_remark1 = <lv_value>. ENDIF.
-
-          IF ls_ymdg_site-zsite_id IS NOT INITIAL.
-            MODIFY ymdg_site FROM ls_ymdg_site.
-            IF sy-subrc <> 0.
-              CLEAR ls_message.
-              ls_message-msgid = 'USMD'.
-              ls_message-msgno = '000'.
-              ls_message-msgty = 'E'.
-              ls_message-msgv1 = 'Save failed:'.
-              ls_message-msgv2 = ls_ymdg_site-zsite_id.
-              APPEND ls_message TO et_message.
-            ENDIF.
-          ENDIF.
-
-        ENDLOOP.
+      ASSIGN <lr_ptr>->* TO <l_data>.
+      IF sy-subrc <> 0.
+        CONTINUE.
       ENDIF.
-
-    ELSE.
-      CLEAR ls_ymdg_site.
-      ls_ymdg_site-mandt = sy-mandt.
-
-      ASSIGN COMPONENT 'SITE' OF STRUCTURE <l_data> TO <lv_value>.
-      IF sy-subrc = 0. ls_ymdg_site-zsite_id = <lv_value>. ENDIF.
-
-      ASSIGN COMPONENT 'NAME' OF STRUCTURE <l_data> TO <lv_value>.
-      IF sy-subrc = 0. ls_ymdg_site-ad_name1 = <lv_value>. ENDIF.
-
-      ASSIGN COMPONENT 'CITY' OF STRUCTURE <l_data> TO <lv_value>.
-      IF sy-subrc = 0. ls_ymdg_site-ad_city1 = <lv_value>. ENDIF.
-
-      ASSIGN COMPONENT 'COUNTRY' OF STRUCTURE <l_data> TO <lv_value>.
-      IF sy-subrc = 0. ls_ymdg_site-land1 = <lv_value>. ENDIF.
-
-      ASSIGN COMPONENT 'STREET' OF STRUCTURE <l_data> TO <lv_value>.
-      IF sy-subrc = 0. ls_ymdg_site-ad_street = <lv_value>. ENDIF.
-
-      ASSIGN COMPONENT 'ZIP' OF STRUCTURE <l_data> TO <lv_value>.
-      IF sy-subrc = 0. ls_ymdg_site-ad_pstcd1 = <lv_value>. ENDIF.
-
-      ASSIGN COMPONENT 'DESCR' OF STRUCTURE <l_data> TO <lv_value>.
-      IF sy-subrc = 0. ls_ymdg_site-ad_remark1 = <lv_value>. ENDIF.
-
-      IF ls_ymdg_site-zsite_id IS NOT INITIAL.
-        MODIFY ymdg_site FROM ls_ymdg_site.
-      ENDIF.
-
-    ENDIF.
-
-  ENDLOOP.
-
-  " Handle UPDATE (similar to above, included for completeness)
-  IF lr_data_upd IS BOUND.
-
-    ASSIGN lr_data_upd->* TO <l_data>.
-    IF sy-subrc = 0.
 
       DESCRIBE FIELD <l_data> TYPE lv_kind.
 
       IF lv_kind = 'h' OR lv_kind = 'H'.
-        ASSIGN lr_data_upd->* TO <lt_data>.
+        ASSIGN <lr_ptr>->* TO <lt_data>.
         IF sy-subrc = 0.
           LOOP AT <lt_data> ASSIGNING <ls_data>.
 
@@ -809,6 +703,15 @@ METHOD if_usmd_pp_access~save.
 
             IF ls_ymdg_site-zsite_id IS NOT INITIAL.
               MODIFY ymdg_site FROM ls_ymdg_site.
+              IF sy-subrc <> 0.
+                CLEAR ls_message.
+                ls_message-msgid = 'USMD'.
+                ls_message-msgno = '000'.
+                ls_message-msgty = 'E'.
+                ls_message-msgv1 = 'Save failed:'.
+                ls_message-msgv2 = ls_ymdg_site-zsite_id.
+                APPEND ls_message TO et_message.
+              ENDIF.
             ENDIF.
 
           ENDLOOP.
@@ -845,44 +748,119 @@ METHOD if_usmd_pp_access~save.
 
       ENDIF.
 
-    ENDIF.
-  ENDIF.
+    ENDLOOP.
 
-  " Handle DELETE
-  IF lr_data_del IS BOUND.
+    IF lr_data_upd IS BOUND.
 
-    ASSIGN lr_data_del->* TO <l_data>.
-    IF sy-subrc = 0.
+      ASSIGN lr_data_upd->* TO <l_data>.
+      IF sy-subrc = 0.
 
-      DESCRIBE FIELD <l_data> TYPE lv_kind.
+        DESCRIBE FIELD <l_data> TYPE lv_kind.
 
-      IF lv_kind = 'h' OR lv_kind = 'H'.
-        ASSIGN lr_data_del->* TO <lt_data>.
-        IF sy-subrc = 0.
-          LOOP AT <lt_data> ASSIGNING <ls_data>.
-            CLEAR lv_zsite_id.
-            ASSIGN COMPONENT 'SITE' OF STRUCTURE <ls_data> TO <lv_value>.
-            IF sy-subrc = 0. lv_zsite_id = <lv_value>. ENDIF.
+        IF lv_kind = 'h' OR lv_kind = 'H'.
+          ASSIGN lr_data_upd->* TO <lt_data>.
+          IF sy-subrc = 0.
+            LOOP AT <lt_data> ASSIGNING <ls_data>.
 
-            IF lv_zsite_id IS NOT INITIAL.
-              DELETE FROM ymdg_site WHERE zsite_id = lv_zsite_id.
-            ENDIF.
-          ENDLOOP.
+              CLEAR ls_ymdg_site.
+              ls_ymdg_site-mandt = sy-mandt.
+
+              ASSIGN COMPONENT 'SITE' OF STRUCTURE <ls_data> TO <lv_value>.
+              IF sy-subrc = 0. ls_ymdg_site-zsite_id = <lv_value>. ENDIF.
+
+              ASSIGN COMPONENT 'NAME' OF STRUCTURE <ls_data> TO <lv_value>.
+              IF sy-subrc = 0. ls_ymdg_site-ad_name1 = <lv_value>. ENDIF.
+
+              ASSIGN COMPONENT 'CITY' OF STRUCTURE <ls_data> TO <lv_value>.
+              IF sy-subrc = 0. ls_ymdg_site-ad_city1 = <lv_value>. ENDIF.
+
+              ASSIGN COMPONENT 'COUNTRY' OF STRUCTURE <ls_data> TO <lv_value>.
+              IF sy-subrc = 0. ls_ymdg_site-land1 = <lv_value>. ENDIF.
+
+              ASSIGN COMPONENT 'STREET' OF STRUCTURE <ls_data> TO <lv_value>.
+              IF sy-subrc = 0. ls_ymdg_site-ad_street = <lv_value>. ENDIF.
+
+              ASSIGN COMPONENT 'ZIP' OF STRUCTURE <ls_data> TO <lv_value>.
+              IF sy-subrc = 0. ls_ymdg_site-ad_pstcd1 = <lv_value>. ENDIF.
+
+              ASSIGN COMPONENT 'DESCR' OF STRUCTURE <ls_data> TO <lv_value>.
+              IF sy-subrc = 0. ls_ymdg_site-ad_remark1 = <lv_value>. ENDIF.
+
+              IF ls_ymdg_site-zsite_id IS NOT INITIAL.
+                MODIFY ymdg_site FROM ls_ymdg_site.
+              ENDIF.
+
+            ENDLOOP.
+          ENDIF.
+
+        ELSE.
+          CLEAR ls_ymdg_site.
+          ls_ymdg_site-mandt = sy-mandt.
+
+          ASSIGN COMPONENT 'SITE' OF STRUCTURE <l_data> TO <lv_value>.
+          IF sy-subrc = 0. ls_ymdg_site-zsite_id = <lv_value>. ENDIF.
+
+          ASSIGN COMPONENT 'NAME' OF STRUCTURE <l_data> TO <lv_value>.
+          IF sy-subrc = 0. ls_ymdg_site-ad_name1 = <lv_value>. ENDIF.
+
+          ASSIGN COMPONENT 'CITY' OF STRUCTURE <l_data> TO <lv_value>.
+          IF sy-subrc = 0. ls_ymdg_site-ad_city1 = <lv_value>. ENDIF.
+
+          ASSIGN COMPONENT 'COUNTRY' OF STRUCTURE <l_data> TO <lv_value>.
+          IF sy-subrc = 0. ls_ymdg_site-land1 = <lv_value>. ENDIF.
+
+          ASSIGN COMPONENT 'STREET' OF STRUCTURE <l_data> TO <lv_value>.
+          IF sy-subrc = 0. ls_ymdg_site-ad_street = <lv_value>. ENDIF.
+
+          ASSIGN COMPONENT 'ZIP' OF STRUCTURE <l_data> TO <lv_value>.
+          IF sy-subrc = 0. ls_ymdg_site-ad_pstcd1 = <lv_value>. ENDIF.
+
+          ASSIGN COMPONENT 'DESCR' OF STRUCTURE <l_data> TO <lv_value>.
+          IF sy-subrc = 0. ls_ymdg_site-ad_remark1 = <lv_value>. ENDIF.
+
+          IF ls_ymdg_site-zsite_id IS NOT INITIAL.
+            MODIFY ymdg_site FROM ls_ymdg_site.
+          ENDIF.
+
         ENDIF.
-      ELSE.
-        CLEAR lv_zsite_id.
-        ASSIGN COMPONENT 'SITE' OF STRUCTURE <l_data> TO <lv_value>.
-        IF sy-subrc = 0. lv_zsite_id = <lv_value>. ENDIF.
 
-        IF lv_zsite_id IS NOT INITIAL.
-          DELETE FROM ymdg_site WHERE zsite_id = lv_zsite_id.
-        ENDIF.
       ENDIF.
-
     ENDIF.
-  ENDIF.
 
-ENDMETHOD.
+    IF lr_data_del IS BOUND.
+
+      ASSIGN lr_data_del->* TO <l_data>.
+      IF sy-subrc = 0.
+
+        DESCRIBE FIELD <l_data> TYPE lv_kind.
+
+        IF lv_kind = 'h' OR lv_kind = 'H'.
+          ASSIGN lr_data_del->* TO <lt_data>.
+          IF sy-subrc = 0.
+            LOOP AT <lt_data> ASSIGNING <ls_data>.
+              CLEAR lv_zsite_id.
+              ASSIGN COMPONENT 'SITE' OF STRUCTURE <ls_data> TO <lv_value>.
+              IF sy-subrc = 0. lv_zsite_id = <lv_value>. ENDIF.
+
+              IF lv_zsite_id IS NOT INITIAL.
+                DELETE FROM ymdg_site WHERE zsite_id = lv_zsite_id.
+              ENDIF.
+            ENDLOOP.
+          ENDIF.
+        ELSE.
+          CLEAR lv_zsite_id.
+          ASSIGN COMPONENT 'SITE' OF STRUCTURE <l_data> TO <lv_value>.
+          IF sy-subrc = 0. lv_zsite_id = <lv_value>. ENDIF.
+
+          IF lv_zsite_id IS NOT INITIAL.
+            DELETE FROM ymdg_site WHERE zsite_id = lv_zsite_id.
+          ENDIF.
+        ENDIF.
+
+      ENDIF.
+    ENDIF.
+
+  ENDMETHOD.
 ```
 
 ---
