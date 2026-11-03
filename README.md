@@ -100,15 +100,23 @@ Validate the implementation:
 
 ```text
 .
-├── config/
-│   └── Configuration documentation
+sap-mdg-custom-site-reuse-mode/
+│
 ├── docs/
-│   └── Detailed implementation guides
-├── src/
-│   ├── classes/
-│   │   └── ABAP access class code
-│   └── ddic/
-│       └── Data dictionary objects
+│   ├── images/
+│   │   ├── phase1/          (Screenshots: domain, data element, tables, structures, lock object)
+│   │   ├── phase2/          (Screenshots: class creation, interface, methods)
+│   │   ├── phase3/          (Screenshots: entity key, reuse area, active area assignment)
+│   │   ├── phase4/          (Screenshots: SMT mappings - 12 images)
+│   │   └── phase8/          (Screenshots: NWBC, testing, SE16N verification)
+│   │
+│   ├── 01-ddic-objects.md
+│   ├── 02-access-class.md
+│   ├── 03-data-model-setup.md
+│   ├── 04-smt-mappings.md
+│   ├── 05-workflow-ui-roles.md
+│   └── 06-testing.md
+│
 ├── LICENSE
 └── README.md
 ```
