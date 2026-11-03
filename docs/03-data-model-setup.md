@@ -1,4 +1,3 @@
-```markdown
 # Phase 3: Data Model Setup with Reuse Area
 
 ## Overview
@@ -28,10 +27,7 @@ For the basic data model creation steps, you can follow the SAP Community implem
 ### Step 1: Create Data Model ZK
 
 1. Open transaction **MDGIMG** (MDG IMG)
-2. Navigate to:
-   ```
-   General Settings → Data Modeling → Define Data Model
-   ```
+2. Navigate to: `General Settings → Data Modeling → Define Data Model`
 3. Click **New Entries**
 4. Create Data Model:
    - **Data Model:** ZK
@@ -43,10 +39,7 @@ For the basic data model creation steps, you can follow the SAP Community implem
 
 ### Step 2: Create Entity Type - SITE
 
-1. In MDGIMG, navigate to:
-   ```
-   General Settings → Data Modeling → Define Entity Types
-   ```
+1. In MDGIMG, navigate to: `General Settings → Data Modeling → Define Entity Types`
 2. Click **New Entries**
 3. Create Entity Type:
    - **Data Model:** ZK
@@ -77,10 +70,7 @@ When creating the SITE entity, assign **ZSITE_ID** as the data element for the e
 
 ### Step 1: Navigate to Active Area Configuration
 
-1. In MDGIMG, navigate to:
-   ```
-   General Settings → Data Modeling → Define Active Areas
-   ```
+1. In MDGIMG, navigate to: `General Settings → Data Modeling → Define Active Areas`
 2. Click **New Entries**
 
 ---
@@ -109,10 +99,7 @@ You can assign the Reuse Active Area in **two ways**:
 
 Assign at the Data Model level if all entities use the same active area.
 
-1. Navigate to:
-   ```
-   General Settings → Data Modeling → Define Data Model
-   ```
+1. Navigate to: `General Settings → Data Modeling → Define Data Model`
 2. Select Data Model **ZK**
 3. Assign **ZK_SITE_AR** as default active area
 
@@ -124,25 +111,18 @@ Assign at the Entity Type level for entity-specific active areas.
 
 ![Active Area Assignment](images/phase3/active-area-assignment.png)
 
-1. Navigate to:
-   ```
-   General Settings → Data Modeling → Define Entity Types
-   ```
+1. Navigate to: `General Settings → Data Modeling → Define Entity Types`
 2. Select Entity Type **SITE**
 3. In **Active Area Assignment** section:
    - **Active Area:** ZK_SITE_AR
    - **Storage Type:** Reuse Area
-
-**Save** your configuration.
+4. **Save** your configuration.
 
 ---
 
 ## 3.5 Define Entity Attributes
 
-1. In MDGIMG, navigate to:
-   ```
-   General Settings → Data Modeling → Define Attributes
-   ```
+1. In MDGIMG, navigate to: `General Settings → Data Modeling → Define Attributes`
 2. Select Data Model **ZK** and Entity Type **SITE**
 3. Click **New Entries**
 
@@ -164,10 +144,7 @@ Assign at the Entity Type level for entity-specific active areas.
 
 ## 3.6 Assign Structures to Entity Type
 
-1. In MDGIMG, navigate to:
-   ```
-   General Settings → Data Modeling → Assign Structures to Entity Types
-   ```
+1. In MDGIMG, navigate to: `General Settings → Data Modeling → Assign Structures to Entity Types`
 2. Select Data Model **ZK** and Entity Type **SITE**
 3. Click **New Entries**
 
@@ -188,10 +165,7 @@ Assign at the Entity Type level for entity-specific active areas.
 
 After completing the configuration, generate the MDG-specific structures:
 
-1. In MDGIMG, navigate to:
-   ```
-   General Settings → Data Modeling → Generate Data Model-Specific Structures
-   ```
+1. In MDGIMG, navigate to: `General Settings → Data Modeling → Generate Data Model-Specific Structures`
 2. Select Data Model **ZK**
 3. Click **Generate** (F8)
 4. Check the generation log for errors
@@ -206,10 +180,7 @@ After completing the configuration, generate the MDG-specific structures:
 
 ## 3.8 Activate Data Model
 
-1. In MDGIMG, navigate to:
-   ```
-   General Settings → Data Modeling → Activate Data Model
-   ```
+1. In MDGIMG, navigate to: `General Settings → Data Modeling → Activate Data Model`
 2. Select Data Model **ZK**
 3. Click **Activate**
 4. Check activation log for errors
@@ -262,14 +233,6 @@ Proceed to [Phase 4: SMT Mappings](04-smt-mappings.md)
 
 ---
 
-## 📚 Additional Resources
-
-- [SAP MDG Data Modeling Guide](https://help.sap.com/docs/SAP_MASTER_DATA_GOVERNANCE)
-- [Reuse Mode vs Flex Mode Comparison](https://community.sap.com)
-- Transaction Code: **MDGIMG**
-
----
-
 ## ⚠️ Common Issues and Solutions
 
 | Issue | Solution |
@@ -282,4 +245,3 @@ Proceed to [Phase 4: SMT Mappings](04-smt-mappings.md)
 ---
 
 **Important:** The Reuse Active Area and Access Class assignment are critical for Reuse Mode. Without these, MDG will not know how to persist data to YMDG_SITE table.
-```
