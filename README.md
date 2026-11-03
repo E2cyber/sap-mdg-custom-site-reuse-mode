@@ -99,7 +99,6 @@ Validate the implementation:
 ## 📂 What's Inside
 
 ```text
-.
 sap-mdg-custom-site-reuse-mode/
 │
 ├── docs/
