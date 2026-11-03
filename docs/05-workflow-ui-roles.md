@@ -2,7 +2,7 @@
 
 ## Overview
 
-Phases 5, 6, and 7 cover the MDG frontend configuration including workflow, user interface, and security roles. **These configurations are identical for both Flex Mode and Reuse Mode implementations.**
+Phases 5, 6, and 7 cover the MDG configuration including workflow, user interface, and security roles. **These configurations are identical for both Flex Mode and Reuse Mode implementations.**
 
 Since the custom SITE entity is now properly configured with the data model, access class, and mappings, the remaining configuration follows standard MDG processes.
 
